@@ -6,6 +6,6 @@ public class IndexController {
     }
 
     public String oopsHandler() {
-        return "notimplemented";
+        throw new ValueNotFoundException();
     }
 }
