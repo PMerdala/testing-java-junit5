@@ -1,16 +1,16 @@
 package pl.pmerdala.springframework.sfgpetclinic.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 
 import java.time.Duration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@Tag("Controller")
 class IndexControllerTest {
 
     IndexController controller;
@@ -24,6 +24,7 @@ class IndexControllerTest {
     @Test
     void index() {
         assertEquals("index", controller.index());
+        assertThat(controller.index()).isEqualTo("index");
     }
 
     @DisplayName("Test proper View name is returned for error handle page")

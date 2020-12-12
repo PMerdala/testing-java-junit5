@@ -7,6 +7,7 @@ import pl.pmerdala.springframework.sfgpetclinic.services.PetService;
 import pl.pmerdala.springframework.sfgpetclinic.services.PetTypeService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OwnerMapService extends AbstractMapService<Owner, Long> implements OwnerService {
 
@@ -53,7 +54,8 @@ public class OwnerMapService extends AbstractMapService<Owner, Long> implements 
 
     @Override
     public List<Owner> findAllByLastNameLike(String lastName) {
-        //todo: impl
-        return null;
+        return this.findAll().stream()
+                .filter(owner -> owner.getLastName().matches(".*" + lastName + ".*"))
+                .collect(Collectors.toUnmodifiableList());
     }
 }

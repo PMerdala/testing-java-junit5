@@ -1,1 +1,1 @@
-mvn -N io.takari:maven:wrapper -Dmaven=3.5.3
+mvn wrapper:wrapper -DmavenVersion=3.5.3
