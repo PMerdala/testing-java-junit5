@@ -1,7 +1,6 @@
 package pl.pmerdala.springframework.sfgpetclinic.services.springdatajpa;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +18,7 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 class SpecialitySDJpaServiceTest {
 
-    @Mock
+    @Mock(lenient = true)
     SpecialityRepository specialityRepository;
 
     @InjectMocks
@@ -55,21 +54,21 @@ class SpecialitySDJpaServiceTest {
     @Test
     void DoThrowTest() {
         doThrow(new RuntimeException("Boom")).when(specialityRepository).findById(anyLong());
-        assertThrows(RuntimeException.class,()->service.findById(1L));
+        assertThrows(RuntimeException.class, () -> service.findById(1L));
         verify(specialityRepository).findById(anyLong());
     }
 
     @Test
     void GivenThrowTest() {
         given(specialityRepository.findById(anyLong())).willThrow(new RuntimeException("Boom"));
-        assertThrows(RuntimeException.class,()->service.findById(1L));
+        assertThrows(RuntimeException.class, () -> service.findById(1L));
         then(specialityRepository).should(times(1)).findById(anyLong());
     }
 
     @Test
     void willThrowGiwenTest() {
         willThrow(new RuntimeException("boom")).given(specialityRepository).findById(anyLong());
-        assertThrows(RuntimeException.class,()->service.findById(1L));
+        assertThrows(RuntimeException.class, () -> service.findById(1L));
         then(specialityRepository).should(atLeast(1)).findById(anyLong());
     }
 
@@ -82,11 +81,28 @@ class SpecialitySDJpaServiceTest {
         Speciality savedSpeciality = new Speciality();
         savedSpeciality.setId(1L);
 
-        given(specialityRepository.save(argThat(argument-> argument.getDescription().equals(description))))
+        given(specialityRepository.save(argThat(argument -> argument.getDescription().equals(description))))
                 .willReturn(savedSpeciality);
 
         Speciality returnSpeciality = service.save(speciality);
         assertThat(returnSpeciality.getId()).isEqualTo(1L);
-        then(specialityRepository).should().save(argThat(arg->arg.getDescription().equals(description)));
+        then(specialityRepository).should().save(argThat(arg -> arg.getDescription().equals(description)));
+    }
+
+    @Test
+    void saveLambdaTestNoMatch() {
+        String description = "MATCH_ME";
+        final Speciality speciality = new Speciality();
+        speciality.setDescription("NOT_MATCH");
+
+        Speciality savedSpeciality = new Speciality();
+        savedSpeciality.setId(1L);
+
+        given(specialityRepository.save(argThat(argument -> argument.getDescription().equals(description))))
+                .willReturn(savedSpeciality);
+
+        Speciality returnSpeciality = service.save(speciality);
+        assertThat(returnSpeciality).isNull();
+        then(specialityRepository).should().save(any());
     }
 }
