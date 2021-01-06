@@ -180,7 +180,7 @@ class OwnerControllerTest {
         //given
         Owner owner = new Owner(null, null, "Test");
         //when
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        String viewName = controller.processFindForm(owner, bindingResult, null);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(OWNERS_FIND_OWNERS);
@@ -190,11 +190,9 @@ class OwnerControllerTest {
     void processFindFormOneOwnerFoundShouldRedirectToOwnerPage() {
         //given
         Owner owner = new Owner(null, null, "Test");
-        List<Owner> findOwners = new ArrayList<>();
-        findOwners.add(new Owner(5L, "Test", "Test"));
-        given(service.findAllByLastNameLike(any())).willReturn(findOwners);
+        prepareServiceToFindByName();
         //when
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        String viewName = controller.processFindForm(owner, null, null);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(REDIRECT_OWNERS_5);
@@ -204,16 +202,26 @@ class OwnerControllerTest {
     @Test
     void processFindFormTwoOwnerFoundShouldGoOwnerList() {
         //given
-        Owner owner = new Owner(null, null, "Test");
-        List<Owner> findOwners = new ArrayList<>();
-        findOwners.add(new Owner(5L, "Test", "Test"));
-        findOwners.add(new Owner(1L, "Pre", "PretestSub"));
-        given(service.findAllByLastNameLike(any())).willReturn(findOwners);
+        Owner owner = new Owner(null, null, "Test2");
+        prepareServiceToFindByName();
         //when
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        String viewName = controller.processFindForm(owner, null, model);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(OWNERS_OWNERS_LIST);
         then(model).should().addAttribute(eq("selections"), any(List.class));
+    }
+
+    private void prepareServiceToFindByName() {
+        given(service.findAllByLastNameLike(stringArgumentCaptor.capture())).willAnswer(invocationOnMock -> {
+            List<Owner> findOwners = new ArrayList<>();
+            if ("%Test%".equals(invocationOnMock.getArgument(0))) {
+                findOwners.add(new Owner(5L, "Test", "Test"));
+            } else if ("%Test2%".equals(invocationOnMock.getArgument(0))) {
+                findOwners.add(new Owner(5L, "Test", "Test"));
+                findOwners.add(new Owner(1L, "Pre", "PretestSub"));
+            }
+            return findOwners;
+        });
     }
 }
