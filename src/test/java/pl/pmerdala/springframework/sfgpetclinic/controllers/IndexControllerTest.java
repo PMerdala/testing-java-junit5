@@ -1,6 +1,5 @@
 package pl.pmerdala.springframework.sfgpetclinic.controllers;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
 
@@ -58,7 +57,7 @@ class IndexControllerTest {
 
     @Test
     void testAssumeTrueAssumptionIsTrue() {
-        assumeTrue("PAWEŁ".equalsIgnoreCase(System.getProperty("USER_NAME","PAWEŁ")));
+        assumeTrue("PAWEŁ".equalsIgnoreCase(System.getProperty("USER_NAME", "PAWEŁ")));
     }
 
     @EnabledOnOs(OS.MAC)
@@ -81,12 +80,12 @@ class IndexControllerTest {
     void testForJava11() {
     }
 
-    @EnabledIfEnvironmentVariable(named="USERNAME",matches="merdala")
+    @EnabledIfEnvironmentVariable(named = "USERNAME", matches = "merdala")
     @Test
     void testIfUserPM() {
     }
 
-    @EnabledIfEnvironmentVariable(named="USERNAME",matches="Fred")
+    @EnabledIfEnvironmentVariable(named = "USERNAME", matches = "Fred")
     @Test
     void testIfUserFred() {
 

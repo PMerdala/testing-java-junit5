@@ -1,10 +1,8 @@
 package pl.pmerdala.springframework.sfgpetclinic.services.springdatajpa;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,8 +11,7 @@ import pl.pmerdala.springframework.sfgpetclinic.repositories.SpecialityRepositor
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +36,7 @@ class SpecialitySDJpaServiceTest {
                 .thenReturn(Optional.of(speciality));
         Speciality foundSpeciality = service.findById(1L);
         assertThat(foundSpeciality).isNotNull();
-        verify(specialityRepository,times(1)).findById(anyLong());
+        verify(specialityRepository, times(1)).findById(anyLong());
     }
 
     @Test

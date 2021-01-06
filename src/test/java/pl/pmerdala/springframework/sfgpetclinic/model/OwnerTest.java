@@ -51,8 +51,8 @@ class OwnerTest {
     void testPetsAfterCreated() {
         Owner owner = createOwner();
         assertAll("Sprawdzenie Pets",
-                ()->assertEquals(0,owner.getPets().size()),
-                ()->assertNotNull(owner.getPets())
+                () -> assertEquals(0, owner.getPets().size()),
+                () -> assertNotNull(owner.getPets())
         );
     }
 
