@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +40,9 @@ class OwnerControllerTest {
     @Mock
     Model model;
 
+    @Captor
+    ArgumentCaptor<String> stringArgumentCaptor;
+
     @AfterEach
     void tearDown() {
         then(service).shouldHaveNoMoreInteractions();
@@ -62,7 +66,7 @@ class OwnerControllerTest {
         final Owner owner = new Owner(5L, "name", "subname");
         given(bindingResult.hasErrors()).willReturn(true);
         //when
-        final String viewName = controller.processCreationForm(owner, bindingResult);
+        controller.processCreationForm(owner, bindingResult);
         //then
         then(bindingResult).should().hasErrors();
     }
@@ -73,7 +77,7 @@ class OwnerControllerTest {
         final Owner owner = new Owner(5L, "name", "subname");
         given(bindingResult.hasErrors()).willReturn(true);
         //when
-        final String viewName = controller.processCreationForm(owner, bindingResult);
+        controller.processCreationForm(owner, bindingResult);
         //then
         then(service).shouldHaveNoInteractions();
     }
@@ -97,7 +101,7 @@ class OwnerControllerTest {
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
         //when
-        final String viewName = controller.processCreationForm(owner, bindingResult);
+        controller.processCreationForm(owner, bindingResult);
         //then
         then(bindingResult).should().hasErrors();
     }
@@ -109,7 +113,7 @@ class OwnerControllerTest {
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
         //when
-        final String viewName = controller.processCreationForm(owner, bindingResult);
+        controller.processCreationForm(owner, bindingResult);
         //then
         then(service).should().save(any());
     }
@@ -119,11 +123,10 @@ class OwnerControllerTest {
         //given
         Owner owner = new Owner(null, null, null);
         //when
-        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        given(service.findAllByLastNameLike(stringArgumentCaptor.capture())).willReturn(new ArrayList<>());
+        controller.processFindForm(owner, bindingResult, model);
         //then
-        assertThat(captor.getValue()).isEqualTo("%");
+        assertThat(stringArgumentCaptor.getValue()).isEqualTo("%");
     }
 
     @Test
@@ -133,7 +136,7 @@ class OwnerControllerTest {
         //when
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        controller.processFindForm(owner, bindingResult, model);
         //then
         assertThat(captor.getValue()).isEqualTo("%");
     }
@@ -145,7 +148,7 @@ class OwnerControllerTest {
         //when
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        controller.processFindForm(owner, bindingResult, model);
         //then
         assertThat(captor.getValue()).isEqualTo("%");
     }
@@ -155,7 +158,7 @@ class OwnerControllerTest {
         //given
         Owner owner = new Owner(null, null, "Test");
         //when
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        controller.processFindForm(owner, bindingResult, model);
         //then
         then(service).should().findAllByLastNameLike(argThat(arg -> arg.equals("%Test%")));
     }
@@ -167,7 +170,7 @@ class OwnerControllerTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
         //when
-        String viewName = controller.processFindForm(owner, bindingResult, model);
+        controller.processFindForm(owner, bindingResult, model);
         //then
         assertThat(captor.getValue()).isEqualTo("%Test%");
     }
