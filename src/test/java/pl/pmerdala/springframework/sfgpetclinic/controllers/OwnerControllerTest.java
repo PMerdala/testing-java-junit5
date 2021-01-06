@@ -3,10 +3,7 @@ package pl.pmerdala.springframework.sfgpetclinic.controllers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.pmerdala.springframework.sfgpetclinic.fauxspring.BindingResult;
 import pl.pmerdala.springframework.sfgpetclinic.fauxspring.Model;
@@ -20,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.inOrder;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerControllerTest {
@@ -204,12 +202,15 @@ class OwnerControllerTest {
         //given
         Owner owner = new Owner(null, null, "Test2");
         prepareServiceToFindByName();
+        InOrder inOrder = inOrder(service, model);
         //when
         String viewName = controller.processFindForm(owner, null, model);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(OWNERS_OWNERS_LIST);
-        then(model).should().addAttribute(eq("selections"), any(List.class));
+        then(model).should().addAttribute(eq("selections"), anyList());
+        inOrder.verify(service).findAllByLastNameLike(anyString());
+        inOrder.verify(model).addAttribute(anyString(), anyList());
     }
 
     private void prepareServiceToFindByName() {
