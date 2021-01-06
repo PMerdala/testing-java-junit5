@@ -3,6 +3,7 @@ package pl.pmerdala.springframework.sfgpetclinic.controllers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -114,9 +115,9 @@ class OwnerControllerTest {
     }
 
     @Test
-    void processFindFormEmptyLastNameShouldInvokeService() {
+    void processFindFormEmptyLastNameShouldInvokeServiceOnlyWithWildcard() {
         //given
-        Owner owner =new Owner(null,null,null);
+        Owner owner = new Owner(null, null, null);
         //when
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
@@ -124,53 +125,56 @@ class OwnerControllerTest {
         //then
         assertThat(captor.getValue()).isEqualTo("%%");
     }
+
     @Test
     void processFindFormLastNameTestShouldInvokeService() {
         //given
-        Owner owner =new Owner(null,null,"Test");
+        Owner owner = new Owner(null, null, "Test");
         //when
-        String viewName = controller.processFindForm(owner,bindingResult,model);
+        String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
-        then(service).should().findAllByLastNameLike(argThat(arg->arg.equals("%Test%")));
+        then(service).should().findAllByLastNameLike(argThat(arg -> arg.equals("%Test%")));
     }
 
     @Test
     void processFindFormNotOwnerFoundShouldGoToFindsView() {
         //given
-        Owner owner =new Owner(null,null,"Test");
+        Owner owner = new Owner(null, null, "Test");
         //when
-        String viewName = controller.processFindForm(owner,bindingResult,model);
+        String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(OWNERS_FIND_OWNERS);
     }
+
     @Test
     void processFindFormOneOwnerFoundShouldRedirectToOwnerPage() {
         //given
-        Owner owner =new Owner(null,null,"Test");
+        Owner owner = new Owner(null, null, "Test");
         List<Owner> findOwners = new ArrayList<>();
-        findOwners.add(new Owner(5L,"Test","Test"));
+        findOwners.add(new Owner(5L, "Test", "Test"));
         given(service.findAllByLastNameLike(any())).willReturn(findOwners);
         //when
-        String viewName = controller.processFindForm(owner,bindingResult,model);
+        String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(REDIRECT_OWNERS_5);
         then(model).shouldHaveNoInteractions();
     }
+
     @Test
     void processFindFormTwoOwnerFoundShouldGoOwnerList() {
         //given
-        Owner owner =new Owner(null,null,"Test");
+        Owner owner = new Owner(null, null, "Test");
         List<Owner> findOwners = new ArrayList<>();
-        findOwners.add(new Owner(5L,"Test","Test"));
-        findOwners.add(new Owner(1L,"Pre","PretestSub"));
+        findOwners.add(new Owner(5L, "Test", "Test"));
+        findOwners.add(new Owner(1L, "Pre", "PretestSub"));
         given(service.findAllByLastNameLike(any())).willReturn(findOwners);
         //when
-        String viewName = controller.processFindForm(owner,bindingResult,model);
+        String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
         then(service).should().findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(OWNERS_OWNERS_LIST);
-        then(model).should().addAttribute(eq("selections"),any(List.class));
+        then(model).should().addAttribute(eq("selections"), any(List.class));
     }
 }
