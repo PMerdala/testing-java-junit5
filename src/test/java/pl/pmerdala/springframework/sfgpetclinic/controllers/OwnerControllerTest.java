@@ -14,7 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerControllerTest {
@@ -29,6 +28,7 @@ class OwnerControllerTest {
 
     @Mock
     BindingResult bindingResult;
+
     @AfterEach
     void tearDown() {
         then(service).shouldHaveNoMoreInteractions();
@@ -69,28 +69,37 @@ class OwnerControllerTest {
 
     @Test
     void processCreationFormCorrectDataForOwnerShouldReturnRedirectOwners5() {
+        //given
         final Owner owner = new Owner(5L, "name", "subname");
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
+        //when
         final String viewName = controller.processCreationForm(owner, bindingResult);
+        //then
         assertThat(viewName).isEqualTo(REDIRECT_OWNERS_5);
     }
 
     @Test
     void processCreationFormCorrectDataForOwnerInvokeHasError() {
+        //given
         final Owner owner = new Owner(5L, "name", "subname");
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
+        //when
         final String viewName = controller.processCreationForm(owner, bindingResult);
+        //then
         then(bindingResult).should().hasErrors();
     }
 
     @Test
     void processCreationFormCorrectDataForOwnerShouldInteractiveWithService() {
+        //given
         final Owner owner = new Owner(5L, "name", "subname");
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
+        //when
         final String viewName = controller.processCreationForm(owner, bindingResult);
+        //then
         then(service).should().save(any());
     }
 }
