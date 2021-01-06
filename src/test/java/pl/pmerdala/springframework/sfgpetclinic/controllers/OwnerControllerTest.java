@@ -118,9 +118,11 @@ class OwnerControllerTest {
         //given
         Owner owner =new Owner(null,null,null);
         //when
-        String viewName = controller.processFindForm(owner,bindingResult,model);
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
+        String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
-        then(service).should().findAllByLastNameLike(argThat(arg->arg.equals("%%")));
+        assertThat(captor.getValue()).isEqualTo("%%");
     }
     @Test
     void processFindFormLastNameTestShouldInvokeService() {
