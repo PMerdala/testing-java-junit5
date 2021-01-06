@@ -19,12 +19,16 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class OwnerControllerTest {
 
+    private static final String REDIRECT_OWNERS_5 = "redirect:/owners/5";
+    private static final String OWNERS_CREATE_OR_UPDATE_OWNER_FORM = "owners/createOrUpdateOwnerForm";
     @Mock
     OwnerService service;
 
     @InjectMocks
     OwnerController controller;
 
+    @Mock
+    BindingResult bindingResult;
     @AfterEach
     void tearDown() {
         then(service).shouldHaveNoMoreInteractions();
@@ -34,22 +38,20 @@ class OwnerControllerTest {
     void processCreationFormNotCorrectDataForOwnerShouldReturnCreateorUpdateOwnerForm() {
         //given
         final Owner owner = new Owner(5L, "name", "subname");
-        final BindingResult bindingResult = mock(BindingResult.class);
         given(bindingResult.hasErrors()).willReturn(true);
         //when
-        final String result = controller.processCreationForm(owner, bindingResult);
+        final String viewName = controller.processCreationForm(owner, bindingResult);
         //then
-        assertThat(result).isEqualTo("owners/createOrUpdateOwnerForm");
+        assertThat(viewName).isEqualTo(OWNERS_CREATE_OR_UPDATE_OWNER_FORM);
     }
 
     @Test
     void processCreationFormNotCorrectDataForOwnerShouldInvokeHasError() {
         //given
         final Owner owner = new Owner(5L, "name", "subname");
-        final BindingResult bindingResult = mock(BindingResult.class);
         given(bindingResult.hasErrors()).willReturn(true);
         //when
-        final String result = controller.processCreationForm(owner, bindingResult);
+        final String viewName = controller.processCreationForm(owner, bindingResult);
         //then
         then(bindingResult).should().hasErrors();
     }
@@ -58,10 +60,9 @@ class OwnerControllerTest {
     void processCreationFormNotCorrectDataForOwnerShouldNotInteractiveWithService() {
         //given
         final Owner owner = new Owner(5L, "name", "subname");
-        final BindingResult bindingResult = mock(BindingResult.class);
         given(bindingResult.hasErrors()).willReturn(true);
         //when
-        final String result = controller.processCreationForm(owner, bindingResult);
+        final String viewName = controller.processCreationForm(owner, bindingResult);
         //then
         then(service).shouldHaveNoInteractions();
     }
@@ -69,30 +70,27 @@ class OwnerControllerTest {
     @Test
     void processCreationFormCorrectDataForOwnerShouldReturnRedirectOwners5() {
         final Owner owner = new Owner(5L, "name", "subname");
-        final BindingResult bindingResult = mock(BindingResult.class);
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
-        final String result = controller.processCreationForm(owner, bindingResult);
-        assertThat(result).isEqualTo("redirect:/owners/5");
+        final String viewName = controller.processCreationForm(owner, bindingResult);
+        assertThat(viewName).isEqualTo(REDIRECT_OWNERS_5);
     }
 
     @Test
     void processCreationFormCorrectDataForOwnerInvokeHasError() {
         final Owner owner = new Owner(5L, "name", "subname");
-        final BindingResult bindingResult = mock(BindingResult.class);
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
-        final String result = controller.processCreationForm(owner, bindingResult);
+        final String viewName = controller.processCreationForm(owner, bindingResult);
         then(bindingResult).should().hasErrors();
     }
 
     @Test
     void processCreationFormCorrectDataForOwnerShouldInteractiveWithService() {
         final Owner owner = new Owner(5L, "name", "subname");
-        final BindingResult bindingResult = mock(BindingResult.class);
         given(bindingResult.hasErrors()).willReturn(false);
         given(service.save(any())).willReturn(owner);
-        final String result = controller.processCreationForm(owner, bindingResult);
+        final String viewName = controller.processCreationForm(owner, bindingResult);
         then(service).should().save(any());
     }
 }
