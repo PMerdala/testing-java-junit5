@@ -123,7 +123,7 @@ class OwnerControllerTest {
         given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
         String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
-        assertThat(captor.getValue()).isEqualTo("%%");
+        assertThat(captor.getValue()).isEqualTo("%");
     }
 
     @Test

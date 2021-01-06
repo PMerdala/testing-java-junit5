@@ -9,6 +9,7 @@ import pl.pmerdala.springframework.sfgpetclinic.services.OwnerService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 public class OwnerController {
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
@@ -30,15 +31,13 @@ public class OwnerController {
 
     public String processFindForm(Owner owner, BindingResult result, Model model) {
         //allow parameterless GET request for /owners to retur all records
-        if (owner.getLastName() == null) {
-            owner.setLastName(""); //empty string signifies broadest possible search
-        }
+        final String searchString = Optional.ofNullable(owner.getLastName())
+                .map(name -> "%" + name + "%").orElse("%");
         //find owners by last name
-        List<Owner> results = ownerService.findAllByLastNameLike("%" + owner.getLastName() + "%");
+        List<Owner> results = ownerService.findAllByLastNameLike(searchString);
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", " not found");
-            ;
             return "owners/findOwners";
         } else if (results.size() == 1) {
             // 1 owner found
