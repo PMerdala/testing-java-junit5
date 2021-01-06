@@ -46,7 +46,7 @@ class OwnerControllerTest {
     }
 
     @Test
-    void processCreationFormNotCorrectDataForOwnerShouldReturnCreateorUpdateOwnerForm() {
+    void processCreationFormNotCorrectDataForOwnerShouldReturnCreateOrUpdateOwnerForm() {
         //given
         final Owner owner = new Owner(5L, "name", "subname");
         given(bindingResult.hasErrors()).willReturn(true);
@@ -115,9 +115,33 @@ class OwnerControllerTest {
     }
 
     @Test
-    void processFindFormEmptyLastNameShouldInvokeServiceOnlyWithWildcard() {
+    void processFindFormNullLastNameShouldInvokeServiceOnlyWithWildcard() {
         //given
         Owner owner = new Owner(null, null, null);
+        //when
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
+        String viewName = controller.processFindForm(owner, bindingResult, model);
+        //then
+        assertThat(captor.getValue()).isEqualTo("%");
+    }
+
+    @Test
+    void processFindFormEmptyLastNameShouldInvokeServiceOnlyWithWildcard() {
+        //given
+        Owner owner = new Owner(null, null, "");
+        //when
+        final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
+        String viewName = controller.processFindForm(owner, bindingResult, model);
+        //then
+        assertThat(captor.getValue()).isEqualTo("%");
+    }
+
+    @Test
+    void processFindFormOnlyWhitespaceLastNameShouldInvokeServiceOnlyWithWildcard() {
+        //given
+        Owner owner = new Owner(null, null, "   ");
         //when
         final ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
@@ -134,6 +158,18 @@ class OwnerControllerTest {
         String viewName = controller.processFindForm(owner, bindingResult, model);
         //then
         then(service).should().findAllByLastNameLike(argThat(arg -> arg.equals("%Test%")));
+    }
+
+    @Test
+    void processFindFormLastNameWithWhitespaceTestShouldInvokeService() {
+        //given
+        Owner owner = new Owner(null, null, " Test  ");
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        given(service.findAllByLastNameLike(captor.capture())).willReturn(new ArrayList<>());
+        //when
+        String viewName = controller.processFindForm(owner, bindingResult, model);
+        //then
+        assertThat(captor.getValue()).isEqualTo("%Test%");
     }
 
     @Test
