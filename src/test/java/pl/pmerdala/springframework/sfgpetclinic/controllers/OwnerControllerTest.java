@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.timeout;
 
 @ExtendWith(MockitoExtension.class)
 class OwnerControllerTest {
@@ -180,7 +181,7 @@ class OwnerControllerTest {
         //when
         String viewName = controller.processFindForm(owner, bindingResult, null);
         //then
-        then(service).should().findAllByLastNameLike(any());
+        then(service).should(timeout(10).times(1)).findAllByLastNameLike(any());
         assertThat(viewName).isEqualTo(OWNERS_FIND_OWNERS);
     }
 
