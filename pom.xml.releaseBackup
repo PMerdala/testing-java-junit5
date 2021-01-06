@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.pmerdala.springframework</groupId>
     <artifactId>testing-java-junit5</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>testing-java-junit5</name>
     <description>Testing Java with JUnit 5</description>
@@ -25,8 +27,7 @@
     <connection>scm:git:https://github.com/PMerdala/testing-java-junit5.git</connection>
     <developerConnection>scm:git:https://github.com/PMerdala/testing-java-junit5.git</developerConnection>
     <!--<url></url>-->
-  <tag>HEAD</tag>
-  </scm>
+</scm>
     <inceptionYear>2020</inceptionYear>
 
     <licenses>
@@ -43,7 +44,6 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <junit-platform.version>5.5.0</junit-platform.version>
-        <mocikdo.version>3.6.28</mocikdo.version>
     </properties>
     <dependencies>
         <dependency>
@@ -78,18 +78,6 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.11.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mocikdo.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mocikdo.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
